@@ -7,6 +7,7 @@ class P8983:
   number_of_lanes = None
   lanes = None
   number_of_animals = None
+  assigned_lane = []
   x_animals = []
   y_animals = []
   x_temp = []
@@ -62,9 +63,36 @@ class P8983:
 
   @staticmethod
   def assign_lanes():
-    opening_index_lane = 0
-    closing_index_lane = 1
-    index_animal = 0
+    P8983.assigned_lane = [None] * P8983.number_of_animals
+    animal_index = 0
+    while P8983.x_animals[animal_index] < P8983.lanes[0]:
+      P8983.assigned_lane[animal_index] = P8983.lanes[0]
+      animal_index += 1
+    for closing_lane_index in range(1, P8983.number_of_lanes):
+      opening_lane = P8983.lanes[closing_lane_index - 1]
+      closing_lane = P8983.lanes[closing_lane_index]
+      virtual_center_lane = (opening_lane + closing_lane) // 2
+      while P8983.x_animals[animal_index] <= virtual_center_lane:
+        P8983.assigned_lane[animal_index] = opening_lane
+        animal_index += 1
+      while P8983.x_animals[animal_index] < closing_lane:
+        P8983.assigned_lane[animal_index] = closing_lane
+        animal_index += 1
+    while animal_index < P8983.number_of_animals and P8983.lanes[-1] <= P8983.x_animals[animal_index]:
+      P8983.assigned_lane[animal_index] = P8983.lanes[-1]
+      animal_index += 1
+
+  @staticmethod
+  def count_possible():
+    counter = 0
+    for index in range(P8983.number_of_animals):
+      point_x = P8983.x_animals[index]
+      point_y = P8983.y_animals[index]
+      lane_x = P8983.assigned_lane[index]
+      distance = abs(point_x-lane_x) + point_y
+      if distance <= P8983.bullet_range:
+        counter += 1
+    return counter
 
   @staticmethod
   def execute():
@@ -79,10 +107,20 @@ class P8983:
     P8983.x_temp = [None] * P8983.number_of_animals
     P8983.y_temp = [None] * P8983.number_of_animals
     P8983.sort_animals(0,P8983.number_of_animals-1)
+    if P8983.number_of_lanes > 1:
+      P8983.assign_lanes()
+    elif P8983.number_of_lanes == 1:
+      P8983.assigned_lane = [None] * P8983.number_of_animals
+      for index_animals in range(P8983.number_of_animals):
+        P8983.assigned_lane[index_animals] = P8983.lanes[0]
+    # count number of possible targets
+    final_answer = P8983.count_possible()
 
-    writer(f"{P8983.lanes}\n")
-    writer(f"{P8983.x_animals}\n")
-    writer(f"{P8983.y_animals}\n")
-    writer(f"{P8983.bullet_range}\n")
+    # writer(f"{P8983.lanes}\n")
+    # writer(f"{P8983.x_animals}\n")
+    # writer(f"{P8983.y_animals}\n")
+    # writer(f"{P8983.assigned_lane}\n")
+    # writer(f"{P8983.bullet_range}\n")
+    writer(f"{final_answer}\n")
 
 P8983.execute()
