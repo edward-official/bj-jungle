@@ -4,7 +4,8 @@ writer = sys.stdout.write
 
 class P6549:
   @staticmethod
-  def compute_area():
+  def compute_area(cardin_components, components):
+    writer(f"\n{cardin_components} {components}")
     return
 
   @staticmethod
@@ -16,7 +17,7 @@ class P6549:
       else:
         cardin_components = received[0]
         received.remove(cardin_components)
-        writer(f"{cardin_components} {received}\n")
+        P6549.compute_area(cardin_components, received)
     return
 
 P6549.execute()
