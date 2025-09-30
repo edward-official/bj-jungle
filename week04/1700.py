@@ -16,15 +16,15 @@ class P1700:
         return
 
     @staticmethod
-    def outlet_manager(index):
+    def outlet_manager(plugging_index):
         if len(P1700.current_state) < P1700.n_outlet:
-            P1700.current_state.append(P1700.sequence[index])
+            P1700.current_state.append(P1700.sequence[plugging_index])
             return
         current_maximum_index = -1
         target_device = None
         for plugged_device in P1700.current_state:
             try:
-                next_index = P1700.sequence.index(plugged_device, index + 1)
+                next_index = P1700.sequence.index(plugged_device, plugging_index + 1)
             except ValueError:
                 target_device = plugged_device
                 break
@@ -33,7 +33,7 @@ class P1700:
                 target_device = plugged_device
         P1700.current_state.remove(target_device)
         P1700.unplug_counter += 1
-        P1700.current_state.append(P1700.sequence[index])
+        P1700.current_state.append(P1700.sequence[plugging_index])
         return
 
     @staticmethod
